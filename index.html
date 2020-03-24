@@ -1,29 +1,69 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<title>PedDraw - Get Your Ped On</title>
-		<script type="text/javascript">
-			function getPedImage() {
-				pedText = $('#pedText').val().trim();
-				pedText = pedText.replace(/ +/g, '\t');
-				pedText = btoa(pedText);
-				$.post(
-					'https://alyg45jz31.execute-api.us-west-2.amazonaws.com/Prod/peddraw',
-					{pedText: pedText}, 
-					function (data){
-						document.getElementById('pedImg').setAttribute(
-							'src', data['image_data']
-						);
-					}
-				);
-			}
-		</script>
-	</head>
-	<body>
-		<span>Put your ped up in here -&gt;</span><textarea id="pedText" rows="30" cols="75"></textarea>
-		<button onclick="getPedImage()">PedIT!</button>
-		<br />
-		<img id="pedImg" src="" />
-	</body>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>ped_draw: pedigree drawing with ease</title>
+
+  <link href="assets/ped_icon.png" rel="icon">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
+
+  <link href="assets/style.css" rel="stylesheet">
+
+ <!-- ped_draw -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+ <script type="text/javascript">
+     function getPedImage() {
+         pedText = $('#pedText').val().trim();
+         pedText = pedText.replace(/ +/g, '\t');
+         pedText = btoa(pedText);
+         $.post(
+             'https://alyg45jz31.execute-api.us-west-2.amazonaws.com/Prod/peddraw',
+             {pedText: pedText},
+             function (data){
+                 document.getElementById('pedImg').setAttribute(
+                     'src', data['image_data']
+                 );
+             }
+         );
+     }
+ </script>
+
+</head>
+
+<body>
+
+  <section id="hero" class="d-flex align-items-center">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
+          <h1>Paste ped file:</h1>
+		  <textarea id="pedText" rows="15" cols="55"></textarea>
+             <a href="#" class="btn-get-started scrollto" onclick="getPedImage()">Draw!</a> (ped file specs <a href="https://gatkforums.broadinstitute.org/gatk/discussion/7696/pedigree-ped-files" target="_blank">here</a>)
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img">
+		 <h1>Pedigree:</h1>
+		 <img id="pedImg" src="" />
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+    <div class="container py-4">
+      <div class="copyright">
+        <span><img src="assets/github.png" width="35" height="35"></img> <a href="https://github.com/mvelinder/ped_draw" target="_blank">ped_draw</a>, MIT-licensed, <a href="http://marthlab.org/" target="_blank">marthlab.org</a></span>
+      </div>
+    </div>
+
+
+</body>
+
 </html>
