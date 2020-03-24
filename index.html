@@ -6,16 +6,15 @@
 		<script type="text/javascript">
 			function getPedImage() {
 				pedText = $('#pedText').val().trim();
-				pedText = encodeURI(pedText.replace(/ +/g, '+'));
-				
-				//console.log(pedText);
+				pedText = pedText.replace(/ +/g, '\t');
+				pedText = pedText.replace('\t\r', '\r');
+				pedText = btoa(pedText);
 				$.post(
 					'https://alyg45jz31.execute-api.us-west-2.amazonaws.com/Prod/peddraw',
 					{pedText: pedText}, 
 					function (data){
-						console.log(data);
 						document.getElementById('pedImg').setAttribute(
-							'src', data
+							'src', data['image_data']
 						);
 					}
 				);
@@ -25,7 +24,7 @@
 	<body>
 		<span>Put your ped up in here -&gt;</span><textarea id="pedText" rows="30" cols="75"></textarea>
 		<button onclick="getPedImage()">PedIT!</button>
+		<br />
 		<img id="pedImg" src="" />
 	</body>
 </html>
-
