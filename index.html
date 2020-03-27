@@ -19,6 +19,9 @@
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
  <script type="text/javascript">
+     $(document).ready(function () {
+	     $('#fileUploader').on('change', handleFileSelect);
+	 });
      function getPedImage() {
          pedText = $('#pedText').val().trim();
          pedText = pedText.replace(/ +/g, '\t');
@@ -33,6 +36,28 @@
              }
          );
      }
+
+	 function loadTestPed() {
+	     var testPed = '#Kindred_ID\tSample_ID\tPaternal_ID\tMaternal_ID\tSex\tAffected_Status\tProject\nK001\t1001\t1002\t1003\t1\t2\tdiseaseXYZ\nK001\t1002\t0\t0\t1\t1\tdiseaseXYZ\nK001\t1003\t0\t0\t2\t1\tdiseaseXYZ\nK001\t1004\t1001\t1006\t1\t1\tdiseaseXYZ\nK001\t1005\t1002\t1003\t1\t1\tdiseaseXYZ\nK001\t1006\t0\t0\t2\t1\tdiseaseXYZ\nK001\t1007\t1001\t1006\t2\t2\tdiseaseXYZ\nK001\t1008\t1001\t1006\t2\t1\tdiseaseXYZ';
+	     $('#pedText').val(testPed);
+	 }
+
+	 function handleFileSelect(evt) {
+	     // Check for the various File API support.
+	     if (window.File && window.FileReader && window.FileList && window.Blob) {
+	         var textFile = evt.target.files[0];
+	         if (!escape(textFile.name).endsWith('.ped')) { alert('Wrong file type, please upload a ped file'); return; }
+	         var fr = new FileReader();
+	         fr.onload = function (e) {
+	             $('#pedText').val(e.target.result);
+	             setTimeout(getPedImage, 100);
+	         }
+	         fr.readAsText(textFile);
+	     }
+	     else {
+	         alert('Your browser does not support loading files. Please update your browser and try again.');
+	     }
+	 }
  </script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -55,8 +80,8 @@
       <div class="row">
         <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
           <h1>Paste ped file:</h1>
-             <textarea id="pedText" rows="15" cols="55"></textarea>
-             <a href="#" class="btn-get-started scrollto" onclick="getPedImage()">Draw!</a> <a href="example.html">Try an example</a>
+             <textarea id="pedText" rows="15" cols="65"></textarea>
+             <a href="#" class="btn-get-started scrollto" onclick="getPedImage()">Draw!</a> <a href="javascript:void(0)" onclick="loadTestPed()">Try an example</a>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img">
 		 <h1>Pedigree:</h1>
@@ -64,14 +89,16 @@
         </div>
       </div>
 	  <br><br>
-	  <h1>Upload ped file:</h1> <a href="#" class="btn-get-started scrollto">Browse</a>
+	  <h1>Upload ped file:</h1> <input type="file" id="fileUploader" class="btn-get-started scrollto" /> <!--<a href="#" class="btn-get-started scrollto">Browse</a> -->
     </div>
 
   </section>
 <br><br><br><br>
     <div class="container py-4">
       <div class="copyright">
-        <span><img src="assets/github.png" width="35" height="35"></img> <a href="https://github.com/mvelinder/ped_draw" target="_blank">ped_draw</a>, MIT-licensed, <a href="http://marthlab.org/" target="_blank">marthlab.org</a>, ped file <a href="https://gatkforums.broadinstitute.org/gatk/discussion/7696/pedigree-ped-files" target="_blank">specs</a></span>
+        <span>
+		  <img src="assets/github.png" width="35" height="35"></img>
+		  <a href="https://github.com/mvelinder/ped_draw" target="_blank">ped_draw</a>, MIT-licensed, <a href="http://marthlab.org/" target="_blank">marthlab.org</a>, ped file <a href="https://gatkforums.broadinstitute.org/gatk/discussion/7696/pedigree-ped-files" target="_blank">specs</a></span>
       </div>
     </div>
 
