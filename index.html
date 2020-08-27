@@ -17,23 +17,40 @@
 
  <!-- ped_draw -->
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+
+ <style>
+.download-buttons
+{
+    display:none;
+}
+</style>
 
  <script type="text/javascript">
      $(document).ready(function () {
 	     $('#fileUploader').on('change', handleFileSelect);
 	 });
-     function getPedImage() {
+     function getPedImage(imageType, callback) {
+	     if (imageType == undefined) {
+	         imageType = 'png';
+	     }
          pedText = $('#pedText').val().trim();
          pedText = pedText.replace(/ +/g, '\t');
          pedText = btoa(pedText);
          $.post(
              'https://alyg45jz31.execute-api.us-west-2.amazonaws.com/Prod/peddraw',
-             {pedText: pedText},
+             {pedText: pedText, imageType: imageType},
              function (data){
-	             if (data.sucess) {
-                     document.getElementById('pedImg').setAttribute(
-                         'src', data['image_data']
-                     );
+	             if (data['success']) {
+	                 $('.download-buttons').css('display', 'flex');
+	                 if (callback == undefined) {
+                         document.getElementById('pedImg').setAttribute(
+                             'src', data['image_data']
+                         );
+	                 }
+	                 else {
+	                     callback(data);
+	                 }
 	             }
 	             else {
 	                 alert('An error occurred while processing your PED file, please check your PED file and try again');
@@ -46,6 +63,35 @@
 	     var testPed = '#Kindred_ID\tSample_ID\tPaternal_ID\tMaternal_ID\tSex\tAffected_Status\tProject\nK001\t1001\t1002\t1003\t1\t2\tdiseaseXYZ\nK001\t1002\t0\t0\t1\t1\tdiseaseXYZ\nK001\t1003\t0\t0\t2\t1\tdiseaseXYZ\nK001\t1004\t1001\t1006\t1\t1\tdiseaseXYZ\nK001\t1005\t1002\t1003\t1\t1\tdiseaseXYZ\nK001\t1006\t0\t0\t2\t1\tdiseaseXYZ\nK001\t1007\t1001\t1006\t2\t2\tdiseaseXYZ\nK001\t1008\t1001\t1006\t2\t1\tdiseaseXYZ';
 	     $('#pedText').val(testPed);
 	 }
+
+     function b64toFile(b64Data, filename, contentType) {
+	     var sliceSize = 512;
+	     var byteCharacters = atob(b64Data);
+	     var byteArrays = [];
+
+	     for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+             var slice = byteCharacters.slice(offset, offset + sliceSize);
+             var byteNumbers = new Array(slice.length);
+             for (var i = 0; i < slice.length; i++) {
+                 byteNumbers[i] = slice.charCodeAt(i);
+             }
+			 var byteArray = new Uint8Array(byteNumbers);
+             byteArrays.push(byteArray);
+         }
+         var file = new File(byteArrays, filename, {type: contentType});
+         return file;
+     }
+
+	 function downloadPedImage(imageType) {
+	     getPedImage(imageType, (data) => {
+			 var tmpImageType = imageType;
+			 if (imageType == 'svg') {
+			     tmpImageType = 'image/svg+xml';
+			 }
+	         var blob = b64toFile(data['image_data'].split(',')[1], 'aFile.png', tmpImageType)
+	         saveAs(blob, "ped_draw." + imageType);
+	     });
+     }
 
 	 function handleFileSelect(evt) {
 	     // Check for the various File API support.
@@ -91,6 +137,9 @@
         <div class="col-lg-6 order-1 order-lg-2 hero-img">
 		 <h1>Pedigree:</h1>
 		 <img id="pedImg" src="" />
+		 <div class="download-buttons">
+		   <a href="#" class="btn-get-started scrollto" onclick="downloadPedImage('png')">Download PNG</a>&nbsp;<a href="#" class="btn-get-started scrollto" onclick="downloadPedImage('svg')">Download SVG</a>
+		 </div>
         </div>
       </div>
 	  <br><br>
@@ -98,7 +147,6 @@
 	  <label for="fileUploader" class="custom-file-upload"><img src="assets/upload.png" height="20" width="20"> Browse
 	  </label>
 	  <input id="fileUploader" type="file"/>
-	  <!-- <input type="file" id="fileUploader"/> --> <!--<a href="#" class="btn-get-started scrollto">Browse</a> -->
     </div>
 
   </section>
