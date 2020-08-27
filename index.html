@@ -88,7 +88,6 @@
 			 if (imageType == 'svg') {
 			     tmpImageType = 'image/svg+xml';
 			 }
-									   alert(imageType);
 	         var blob = b64toFile(data['image_data'].split(',')[1], "ped_draw." + imageType, tmpImageType);
 	         saveAs(blob, "ped_draw." + imageType);
 	     });
@@ -139,7 +138,7 @@
 		 <h1>Pedigree:</h1>
 		 <img id="pedImg" src="" />
 		 <div class="download-buttons">
-		   <a href="javascript:void(0)" class="btn-get-started scrollto" onclick="downloadPedImage('png')">Download PNG</a>&nbsp;<a href="javascript:void(0)" class="btn-get-started scrollto" onclick="downloadPedImage('svg')">Download SVG</a>
+		   <a href="javascript:void(0)" class="btn-get-started scrollto" onclick="downloadPedImage('png')">Download PNG</a>&nbsp;<a href="javascript:void(0)" class="btn-get-started scrollto" onclick="downloadPedImage('svg')">Download SVG</a>&nbsp;<a href="javascript:void(0)" class="btn-get-started scrollto" onclick="downloadPedImage('pdf')">Download PDF</a>
 		 </div>
         </div>
       </div>
