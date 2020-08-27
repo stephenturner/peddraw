@@ -30,9 +30,14 @@
              'https://alyg45jz31.execute-api.us-west-2.amazonaws.com/Prod/peddraw',
              {pedText: pedText},
              function (data){
-                 document.getElementById('pedImg').setAttribute(
-                     'src', data['image_data']
-                 );
+	             if (data.sucess) {
+                     document.getElementById('pedImg').setAttribute(
+                         'src', data['image_data']
+                     );
+	             }
+	             else {
+	                 alert('An error occurred while processing your PED file, please check your PED file and try again');
+	             }
              }
          );
      }
